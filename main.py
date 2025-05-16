@@ -3,6 +3,7 @@ import os
 import time
 import base64
 import json
+import questionary
 
 url = "http://127.0.0.1:8000/"
 
@@ -98,8 +99,10 @@ def login():
                 print("⚠️ Correo no tiene un formato válido")
             elif response.status_code == 500:
                 print("❌ Error interno del servidor")
+                return
             else:
                 print("❌ Error desconocido")
+                return
 
             time.sleep(4)
 
@@ -107,6 +110,15 @@ def login():
             print("❌ No se pudo conectar al servidor. Verifica si está encendido.")
             time.sleep(4)
             return
+        
+def menuInteractivo(titulo, opciones):
+
+    seleccion = questionary.select(
+        titulo,
+        choices=opciones
+    ).ask()
+
+    return opciones.index(seleccion) + 1
 
 def main():
     while True:
@@ -114,11 +126,7 @@ def main():
             limpiarPantalla()
             BannerPrincipal()
 
-            print("1. Login")
-            print("2. Register")
-            print("3. Salir")
-
-            opcion = int(input("\nIngrese una opción: "))
+            opcion = menuInteractivo(" Seleccione una opcion", ["1.Login", "2.Registro", "3.Salir"])
 
             match opcion:
                 case 1:
