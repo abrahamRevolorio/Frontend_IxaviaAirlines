@@ -1,13 +1,13 @@
-# screens/loginScreen.py
-
 from tkinter import Toplevel, StringVar
-from ttkbootstrap import Label, Entry, Button, Frame, Style
+from ttkbootstrap import Label, Entry, Button, Frame
 from tkinter import messagebox
-import requests
 from utils.validators import isValidEmail
 from core.apiClient import loginUser
 
+session = {}
+
 def showLoginView(parent):
+
     window = Toplevel(parent)
     window.title("Login - IXAVIA Airlines")
     window.geometry("500x400")
@@ -21,42 +21,87 @@ def showLoginView(parent):
 
     Label(window, text="Iniciar Sesión", font=("Helvetica", 24, "bold")).pack(pady=20)
 
-    frame = Frame(window, padding=20)
-    frame.pack()
+    formFrame = Frame(window, padding=20)
+    formFrame.pack()
 
     emailVar = StringVar()
     passwordVar = StringVar()
+    emailValid = [False]
+    passwordValid = [False]
 
-    # ===== Email =====
-    Label(frame, text="Correo electrónico:").grid(row=0, column=0, sticky="w", pady=5)
-    emailEntry = Entry(frame, textvariable=emailVar, width=40)
-    emailEntry.grid(row=1, column=0, columnspan=2, pady=5)
+    def validateEmail(_):
+        email = emailVar.get().strip()
+        if not email:
+            emailErrorLabel.config(text="El campo es obligatorio.")
+            emailValid[0] = False
+        elif not isValidEmail(email):
+            emailErrorLabel.config(text="Correo inválido.")
+            emailValid[0] = False
+        else:
+            emailErrorLabel.config(text="")
+            emailValid[0] = True
+        updateLoginButtonState()
 
-    # ===== Password =====
-    Label(frame, text="Contraseña:").grid(row=2, column=0, sticky="w", pady=5)
-    passwordEntry = Entry(frame, textvariable=passwordVar, show="*", width=40)
-    passwordEntry.grid(row=3, column=0, columnspan=2, pady=5)
+    def validatePassword(_):
+        password = passwordVar.get().strip()
+        if not password:
+            passwordErrorLabel.config(text="El campo es obligatorio.")
+            passwordValid[0] = False
+        else:
+            passwordErrorLabel.config(text="")
+            passwordValid[0] = True
+        updateLoginButtonState()
 
-    # ===== Botón Login =====
+    def updateLoginButtonState():
+        if emailValid[0] and passwordValid[0]:
+            loginBtn.config(state="normal")
+        else:
+            loginBtn.config(state="disabled")
+
+    Label(formFrame, text="Correo electrónico:").grid(row=0, column=0, sticky="w")
+    emailEntry = Entry(formFrame, textvariable=emailVar, width=40)
+    emailEntry.grid(row=1, column=0, columnspan=2, pady=(0, 2))
+    emailEntry.bind("<FocusOut>", validateEmail)
+    emailErrorLabel = Label(formFrame, text="", foreground="red")
+    emailErrorLabel.grid(row=2, column=0, columnspan=2, sticky="w")
+
+    Label(formFrame, text="Contraseña:").grid(row=3, column=0, sticky="w", pady=(10, 0))
+    passwordEntry = Entry(formFrame, textvariable=passwordVar, show="*", width=40)
+    passwordEntry.grid(row=4, column=0, columnspan=2, pady=(0, 2))
+    passwordEntry.bind("<FocusOut>", validatePassword)
+    passwordErrorLabel = Label(formFrame, text="", foreground="red")
+    passwordErrorLabel.grid(row=5, column=0, columnspan=2, sticky="w")
+
+    result = {"info": None}
+
     def handleLogin():
+
         email = emailVar.get().strip()
         password = passwordVar.get().strip()
-
-        if not isValidEmail(email):
-            messagebox.showwarning("Correo inválido", "Ingrese un correo válido con formato correcto.")
-            return
-        if not password:
-            messagebox.showwarning("Contraseña vacía", "Ingrese su contraseña.")
-            return
-
         result = loginUser(email, password)
+
         if result["success"]:
-            rol = result["rol"]
-            messagebox.showinfo("Bienvenido", f"Inicio de sesión exitoso. Rol detectado: {rol}")
+
+            global session
+
+            session = result
+
+            print(session)
+
+            messagebox.showinfo("Bienvenido", f"Bienvenido {session['nombre']} ({session['apellido']}) con rol {session['rol']}")
             window.destroy()
+
         else:
             messagebox.showerror("Error", result["message"])
 
-    Button(frame, text="Iniciar sesión", bootstyle="primary", width=20, command=handleLogin).grid(row=4, column=0, pady=20)
+    navFrame = Frame(formFrame)
+    navFrame.grid(row=6, column=0, columnspan=2, pady=20)
 
-    Button(frame, text="Cancelar", bootstyle="secondary", width=20, command=window.destroy).grid(row=4, column=1, pady=20)
+    loginBtn = Button(navFrame, text="Iniciar sesión", bootstyle="primary", width=20, command=handleLogin, state="disabled")
+    loginBtn.grid(row=0, column=0, padx=(0, 6))
+
+    cancelBtn = Button(navFrame, text="Cancelar", bootstyle="secondary", width=20, command=window.destroy)
+    cancelBtn.grid(row=0, column=1)
+
+    window.wait_window()
+    return result["info"]
