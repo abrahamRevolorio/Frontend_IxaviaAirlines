@@ -4,6 +4,8 @@ from tkinter import messagebox
 from utils.validators import isValidEmail
 from core.apiClient import loginUser
 
+from utils.styles import centerWindow
+
 session = {}
 
 def showLoginView(parent):
@@ -11,6 +13,7 @@ def showLoginView(parent):
     window = Toplevel(parent)
     window.title("Login - IXAVIA Airlines")
     window.geometry("500x400")
+    centerWindow(window)
     window.grab_set()
 
     def onClose():
@@ -97,10 +100,10 @@ def showLoginView(parent):
     navFrame = Frame(formFrame)
     navFrame.grid(row=6, column=0, columnspan=2, pady=20)
 
-    loginBtn = Button(navFrame, text="Iniciar sesión", bootstyle="primary", width=20, command=handleLogin, state="disabled")
+    loginBtn = Button(navFrame, text="Iniciar sesión", style='success.TButton', width=20, command=handleLogin, state="disabled")
     loginBtn.grid(row=0, column=0, padx=(0, 6))
 
-    cancelBtn = Button(navFrame, text="Cancelar", bootstyle="secondary", width=20, command=window.destroy)
+    cancelBtn = Button(navFrame, text="Cancelar", style='danger.TButton', width=20, command=window.destroy)
     cancelBtn.grid(row=0, column=1)
 
     window.wait_window()

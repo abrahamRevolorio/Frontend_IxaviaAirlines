@@ -5,15 +5,16 @@ import re
 
 from utils.validators import isValidEmail, isSamePassword, isNotEmpty, isValidDpi, isValidPhone
 from core.apiClient import registerUser
+from utils.styles import centerWindow
 
 def showRegisterView(parent):
 
     style = Style()
-    style.theme_use("flatly")
 
     window = Toplevel(parent)
     window.title("Registro")
     window.geometry("700x600")
+    centerWindow(window)
     window.grab_set()
 
     def onClose():
@@ -188,9 +189,9 @@ def showRegisterView(parent):
         else:
             messagebox.showerror("Error", result["message"])
 
-    nextBtn = ttk.Button(navFrame, text="Siguiente", command=nextPage)
-    registerBtn = ttk.Button(navFrame, text="Registrarse", command=handleRegister)
-    cancelBtn = ttk.Button(navFrame, text="Cancelar", command=window.destroy)
+    nextBtn = ttk.Button(navFrame, text="Siguiente", style='confirm.TButton', command=nextPage)
+    registerBtn = ttk.Button(navFrame, text="Registrarse", style='success.TButton', command=handleRegister)
+    cancelBtn = ttk.Button(navFrame, text="Cancelar", style='danger.TButton', command=window.destroy)
 
     nextBtn.grid(row=0, column=0, padx=(0,6), pady=10)
     cancelBtn.grid(row=0, column=1, padx=(6, 0), pady=10)
