@@ -1,7 +1,7 @@
 import requests
 import jwt
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://backend-ixaviaairlines.onrender.com"
 
 def decodeToken(token):
     try:

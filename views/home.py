@@ -3,28 +3,22 @@ from components.navbar import Navbar
 from components.footer import Footer
 
 def homePage():
-
     opcionesNavbar = [
         {
             'texto': 'Login',
             'navigate_to': '/login',
-            'clases': 'mx-2 py-2 px-6 rounded border border-[#486142] transition font-bold text-base''hover:bg-[#1E4DBB] hover:text-[#F0F4FF]',
-            'bgColor': '#2C6BED',
-            'textColor': '#F0F4FF'
+            'clases': '!mx-1 !py-2 !px-6 !rounded !border !border-[#486142] !transition !font-bold !text-[14px] !hover:bg-[#1E4DBB] !hover:text-[#F0F4FF] !bg-[#013691] !text-[#F0F4FF]',
         },
         {
             'texto': 'Registrarte',
             'navigate_to': '/register',
-            'clases': 'mx-2 py-2 px-6 rounded transition font-bold text-base''hover:bg-[#B96328] hover:text-[#F0F4FF]',
-            'bgColor': '#D97D3A',
-            'textColor': '#F0F4FF'
+            'clases': '!mx-1 !py-2 !px-6 !rounded !transition !font-bold !text-[14px] !hover:bg-[#B96328] !hover:text-[#F0F4FF] !bg-[#B54B00] !text-[#F0F4FF]',
         }
     ]
 
     Navbar(opcionesNavbar)
 
-    with ui.element('main').classes('max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-16'):
-
+    with ui.element('main').classes('flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-16'):
         with ui.element('section').classes('flex flex-col md:flex-row items-center gap-10'):
             with ui.column().classes('flex-1 text-center md:text-left'):
                 ui.label('Vuela Seguro y Cómodo con Ixavia Airlines').classes('text-3xl md:text-5xl font-extrabold text-[#2e4e2f] mb-4 md:mb-6')
@@ -34,10 +28,10 @@ def homePage():
                 ).classes('text-base md:text-lg text-gray-700 mb-6 md:mb-8')
                 with ui.row().classes('flex-col sm:flex-row justify-center md:justify-start gap-4 sm:gap-6'):
                     ui.button('Buscar vuelos CDG → Petén').classes(
-                        'w-full sm:w-auto bg-[#2e4e2f] text-white font-semibold px-6 py-3 rounded shadow hover:bg-[#486142] transition'
+                        '!w-full !sm:w-auto !min-w-[220px] !bg-[#1A5AC8] !text-white !font-semibold !px-6 !py-3 !rounded-lg !shadow-md !hover:bg-[#0F4AA6] !transition-colors'
                     )
                     ui.button('Buscar vuelos Petén → CDG').classes(
-                        'w-full sm:w-auto bg-[#486142] text-white font-semibold px-6 py-3 rounded shadow hover:bg-[#2e4e2f] transition'
+                        '!w-full !sm:w-auto !min-w-[220px] !bg-[#486142] !text-white !font-semibold !px-6 !py-3 !rounded-lg !shadow-md !hover:bg-[#2e4e2f] !transition-colors'
                     )
             ui.image('./assets/tikal.jpg').classes('flex-1 rounded-lg shadow-lg max-w-full w-full md:max-w-none').style('object-fit: cover; height: 320px;')
 
@@ -54,6 +48,8 @@ def homePage():
 
         with ui.element('section').classes('bg-[#2e4e2f] rounded-lg p-8 md:p-12 text-center text-white'):
             ui.label('Reserva tu vuelo hoy y vive la experiencia Ixavia Airlines').classes('text-2xl md:text-3xl font-extrabold mb-4 md:mb-6')
-            ui.button('Reservar Ahora').classes('w-full sm:w-auto bg-[#d97d3a] hover:bg-[#b3631f] px-8 py-3 rounded font-bold text-lg shadow').props('elevation=2')
+            ui.button('Reservar Ahora').classes(
+                '!w-full !sm:w-auto !min-w-[220px] !bg-[#d97d3a] !hover:bg-[#b3631f] !px-8 !py-3 !rounded-lg !font-bold !text-lg !shadow-md !transition-colors'
+            )
 
     Footer()

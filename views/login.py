@@ -1,4 +1,4 @@
-from nicegui import ui
+from nicegui import ui, app
 from utils.apiClient import loginUser
 from utils.validators import isNotEmpty, isValidEmail
 from components.navbar import Navbar
@@ -20,25 +20,41 @@ def login():
     ui.add_head_html('''
         <style>
             html, body {
-                height: 100%;
                 margin: 0;
-                overflow: hidden;
+                height: 100%;
+                overflow: auto !important;
+                background-color: #f7f9fb;
             }
-            .no-scroll {
-                height: calc(100vh - 120px);
-                overflow: hidden;
+            .content-wrapper {
+                display: flex !important;
+                flex-direction: column;
+                justify-content: center !important;
+                align-items: center !important;
+                text-align: center;
+                min-height: calc(100vh - 180px);
+                padding: 20px 20px 60px 20px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            /* Centrar los labels de los inputs */
+            .content-wrapper label {
+                display: block;
+                width: 100%;
+                text-align: center !important;
             }
         </style>
     ''')
 
-    with ui.row().classes('no-scroll bg-transparent w-full items-center justify-center'):
-        with ui.column().classes('max-w-md w-full bg-transparent rounded-lg shadow-lg p-10 items-center'):
-            ui.label('Iniciar sesión').classes('text-3xl font-bold mb-6 text-center text-gray-900')
+    with ui.row().classes('content-wrapper w-full h-full justify-center items-center'):
+        with ui.column().classes(
+            'max-w-2xl w-full bg-white mx-auto self-center rounded-xl shadow-md p-10 gap-y-5 border border-gray-200'
+        ):
+            ui.label('Iniciar sesión').classes('text-3xl font-bold mb-4 text-center text-gray-800')
 
             email_input = ui.input(label='Correo electrónico', placeholder='ejemplo@correo.com')\
                 .classes('w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent')
 
-            email_error = ui.label('').classes('text-red-600 text-sm mt-1').style('min-height: 1.25rem')
+            email_error = ui.label('').classes('text-red-600 text-sm').style('min-height: 1.25rem')
 
             def validate_email():
                 email = email_input.value or ''
@@ -53,7 +69,7 @@ def login():
             password_input = ui.input(label='Contraseña', placeholder='********', password=True)\
                 .classes('w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent')
 
-            password_error = ui.label('').classes('text-red-600 text-sm mt-1').style('min-height: 1.25rem')
+            password_error = ui.label('').classes('text-red-600 text-sm').style('min-height: 1.25rem')
 
             def validate_password():
                 password = password_input.value or ''
@@ -62,32 +78,40 @@ def login():
             password_input.on('blur', validate_password)
 
             async def on_submit():
-
                 validate_email()
                 validate_password()
-
                 if email_error.text or password_error.text:
                     return
-
                 result = loginUser(email_input.value, password_input.value)
-
                 if result.get('success'):
+
+                    token = result.get('accessToken')
+
+                    ui.run_javascript(f'localStorage.setItem("accessToken", "{token}");')
+
                     ui.notify(f"¡Bienvenido {result.get('nombre', '')}!", color='green')
                     await asyncio.sleep(2)
-                    ui.run_javascript("window.location.href='/'")
+
+                    if result.get('rol') == 'Agente':
+                        ui.run_javascript("window.location.href='/agente'")
+                    elif result.get('rol') == 'Administrador':
+                        ui.run_javascript("window.location.href='/admin'")
+                    elif result.get('rol') == 'Cliente':
+                        ui.run_javascript("window.location.href='/cliente'")
+                    else:
+                        ui.notify('Rol no reconocido', color='red')
+                        
                 else:
                     ui.notify(result.get('message', 'Error al iniciar sesión.'), color='red')
 
-            with ui.row().classes('w-full justify-center'):
-                ui.button(
-                    'Entrar',
-                    on_click=on_submit
-                ).classes(
-                    'bg-[#008020!important] text-[#F0F4FF!important] text-[18px!important] font-semibold py-[14px!important] px-[24px!important] rounded-md hover:bg-[#006414!important] transition mt-4'
-                )
+            ui.button(
+                'Entrar',
+                on_click=on_submit
+            ).classes(
+                'w-full bg-[#008020!important] text-[#F0F4FF!important] text-[18px!important] font-semibold py-[14px!important] px-[24px!important] rounded-md hover:bg-[#006414!important] transition mt-2'
+            )
 
-            with ui.row().classes('mt-6 justify-between text-gray-700 text-sm'):
-                ui.label('¿No tienes cuenta?')
-                ui.link('Regístrate', '/register').classes('hover:underline')
+            ui.html('¿No tienes cuenta? <a href="/register" class="text-[#1E4DBB] hover:underline ml-1">Regístrate</a>')\
+                .classes('mt-6 text-center text-sm text-gray-700')
 
     Footer()
