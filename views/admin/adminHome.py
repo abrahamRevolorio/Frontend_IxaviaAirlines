@@ -120,7 +120,7 @@ def homePageAdmin():
                         ('Eliminar Cliente', 'red')
                     ])
                 else:
-                    ui.open(link)
+                    ui.run_javascript(f'window.location.href="{link}"')
 
             for card in cards:
                 with ui.card().classes(
