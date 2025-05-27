@@ -4,7 +4,6 @@ from utils.validators import isNotEmpty, isValidEmail, isSamePassword, isValidDp
 from components.navbar import Navbar
 from components.footer import Footer
 import asyncio
-import re
 from datetime import datetime
 
 def register():
