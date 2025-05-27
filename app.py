@@ -2,6 +2,9 @@ from nicegui import ui
 from views.home import homePage
 from views.login import login
 from views.register import register
+from views.admin.adminHome import homePageAdmin
+from views.client.clientHome import homePageClient
+from views.agent.agentHome import homePageAgent
 
 # Tailwind CSS
 ui.add_head_html('''
@@ -73,16 +76,16 @@ def registerPage():
 @ui.page('/admin')
 def adminPage():
     ui.add_head_html(verificarAcceso(['Administrador']))
-    ui.label('Página de Administrador').classes('text-2xl font-bold text-center mb-8 text-[#486142]')
+    homePageAdmin()
 
 @ui.page('/agente')
 def agentePage():
     ui.add_head_html(verificarAcceso(['Agente']))
-    ui.label('Página de Agente').classes('text-2xl font-bold text-center mb-8 text-[#486142]')
+    homePageAgent()
 
 @ui.page('/cliente')
 def clientePage():
     ui.add_head_html(verificarAcceso(['Cliente']))
-    ui.label('Página de Cliente').classes('text-2xl font-bold text-center mb-8 text-[#486142]')
+    homePageClient()
 
 ui.run(title="Ixavia Airline", favicon='./assets/logoIxavia.png')

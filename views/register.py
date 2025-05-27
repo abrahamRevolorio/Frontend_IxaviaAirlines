@@ -55,6 +55,20 @@ def register():
         nacimiento = ui.input(label='Fecha de Nacimiento (yyyy-mm-dd)').classes('w-full mb-2')
         error_nacimiento = ui.label('').classes('text-red-500 text-xs -mt-2 mb-6')
 
+        validation_states = {
+            'nombres': False,
+            'apellidos': False,
+            'email': False,
+            'password': False,
+            'confirm_password': False,
+            'dpi': False,
+            'telefono': False,
+            'direccion': False,
+            'nacionalidad': False,
+            'telefono_emergencia': False,
+            'nacimiento': False
+        }
+
         def validate_fecha(fecha):
             try:
                 datetime.strptime(fecha, '%Y-%m-%d')
@@ -62,7 +76,7 @@ def register():
             except ValueError:
                 return False
 
-        def validate_field(field, value, validator, error_label, error_msg=None):
+        def validate_field(field, value, validator, error_label, error_msg=None, field_name=None):
             if validator == isValidEmail:
                 valid, msg = validator(value)
                 error_label.set_text('' if valid else (msg if msg else 'Correo inválido'))
@@ -72,48 +86,35 @@ def register():
             else:
                 valid = validator(value)
                 error_label.set_text('' if valid else (error_msg if error_msg else 'Campo inválido'))
+            
+            if field_name:
+                validation_states[field_name] = valid
+                update_register_button_state()
+            
             return valid
 
-        nombres.on('blur', lambda: validate_field(nombres, nombres.value, isNotEmpty, error_nombres, 'Este campo no puede estar vacío'))
-        apellidos.on('blur', lambda: validate_field(apellidos, apellidos.value, isNotEmpty, error_apellidos, 'Este campo no puede estar vacío'))
-        email.on('blur', lambda: validate_field(email, email.value, isValidEmail, error_email))
-        password.on('blur', lambda: validate_field(password, password.value, isNotEmpty, error_password, 'Este campo no puede estar vacío'))
-        confirm_password.on('blur', lambda: validate_field(confirm_password, confirm_password.value, isSamePassword, error_confirm))
-        dpi.on('blur', lambda: validate_field(dpi, dpi.value, isValidDpi, error_dpi, 'DPI debe tener 13 dígitos'))
-        telefono.on('blur', lambda: validate_field(telefono, telefono.value, isValidPhone, error_telefono, 'Teléfono debe tener 8 dígitos'))
-        direccion.on('blur', lambda: validate_field(direccion, direccion.value, isNotEmpty, error_direccion, 'Este campo no puede estar vacío'))
-        nacionalidad.on('blur', lambda: validate_field(nacionalidad, nacionalidad.value, isNotEmpty, error_nacionalidad, 'Este campo no puede estar vacío'))
-        telefono_emergencia.on('blur', lambda: validate_field(telefono_emergencia, telefono_emergencia.value, isValidPhone, error_telefono_emergencia, 'Teléfono debe tener 8 dígitos'))
-        nacimiento.on('blur', lambda: error_nacimiento.set_text('' if validate_fecha(nacimiento.value) else 'Fecha inválida. Formato: yyyy-mm-dd'))
+        def update_register_button_state():
+            all_valid = all(validation_states.values())
+            register_button.enabled = all_valid
+
+        nombres.on('blur', lambda: validate_field(nombres, nombres.value, isNotEmpty, error_nombres, 'Este campo no puede estar vacío', 'nombres'))
+        apellidos.on('blur', lambda: validate_field(apellidos, apellidos.value, isNotEmpty, error_apellidos, 'Este campo no puede estar vacío', 'apellidos'))
+        email.on('blur', lambda: validate_field(email, email.value, isValidEmail, error_email, field_name='email'))
+        password.on('blur', lambda: validate_field(password, password.value, isNotEmpty, error_password, 'Este campo no puede estar vacío', 'password'))
+        confirm_password.on('blur', lambda: validate_field(confirm_password, confirm_password.value, isSamePassword, error_confirm, field_name='confirm_password'))
+        dpi.on('blur', lambda: validate_field(dpi, dpi.value, isValidDpi, error_dpi, 'DPI debe tener 13 dígitos', 'dpi'))
+        telefono.on('blur', lambda: validate_field(telefono, telefono.value, isValidPhone, error_telefono, 'Teléfono debe tener 8 dígitos', 'telefono'))
+        direccion.on('blur', lambda: validate_field(direccion, direccion.value, isNotEmpty, error_direccion, 'Este campo no puede estar vacío', 'direccion'))
+        nacionalidad.on('blur', lambda: validate_field(nacionalidad, nacionalidad.value, isNotEmpty, error_nacionalidad, 'Este campo no puede estar vacío', 'nacionalidad'))
+        telefono_emergencia.on('blur', lambda: validate_field(telefono_emergencia, telefono_emergencia.value, isValidPhone, error_telefono_emergencia, 'Teléfono debe tener 8 dígitos', 'telefono_emergencia'))
+        nacimiento.on('blur', lambda: 
+            (error_nacimiento.set_text('' if validate_fecha(nacimiento.value) else 'Fecha inválida. Formato: yyyy-mm-dd'),
+             validation_states.update({'nacimiento': validate_fecha(nacimiento.value)}),
+             update_register_button_state())
+        )
 
         async def handle_register():
-            valid = True
-            
-            if not validate_field(nombres, nombres.value, isNotEmpty, error_nombres, 'Este campo no puede estar vacío'):
-                valid = False
-            if not validate_field(apellidos, apellidos.value, isNotEmpty, error_apellidos, 'Este campo no puede estar vacío'):
-                valid = False
-            if not validate_field(email, email.value, isValidEmail, error_email):
-                valid = False
-            if not validate_field(password, password.value, isNotEmpty, error_password, 'Este campo no puede estar vacío'):
-                valid = False
-            if not validate_field(confirm_password, confirm_password.value, isSamePassword, error_confirm):
-                valid = False
-            if not validate_field(dpi, dpi.value, isValidDpi, error_dpi, 'DPI debe tener 13 dígitos'):
-                valid = False
-            if not validate_field(telefono, telefono.value, isValidPhone, error_telefono, 'Teléfono debe tener 8 dígitos'):
-                valid = False
-            if not validate_field(direccion, direccion.value, isNotEmpty, error_direccion, 'Este campo no puede estar vacío'):
-                valid = False
-            if not validate_field(nacionalidad, nacionalidad.value, isNotEmpty, error_nacionalidad, 'Este campo no puede estar vacío'):
-                valid = False
-            if not validate_field(telefono_emergencia, telefono_emergencia.value, isValidPhone, error_telefono_emergencia, 'Teléfono debe tener 8 dígitos'):
-                valid = False
-            if not validate_fecha(nacimiento.value):
-                error_nacimiento.set_text('Fecha inválida. Formato: yyyy-mm-dd')
-                valid = False
-            
-            if not valid:
+            if not all(validation_states.values()):
                 ui.notify('Por favor corrige los errores en el formulario', type='negative')
                 return
             
@@ -137,6 +138,7 @@ def register():
             else:
                 ui.notify(result.get('message', 'Error al registrar usuario'), type='negative')
 
-        ui.button('Registrarse', on_click=handle_register).classes('w-full py-2 bg-[#486142] text-white hover:bg-[#3a4d36] transition')
+        register_button = ui.button('Registrarse', on_click=handle_register).classes('!w-full !py-2 !bg-[#486142] !text-white !hover:bg-[#3a4d36] !transition')
+        register_button.enabled = False
 
     Footer()

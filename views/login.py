@@ -51,44 +51,62 @@ def login():
         ):
             ui.label('Iniciar sesión').classes('text-3xl font-bold mb-4 text-center text-gray-800')
 
+            # Variables para rastrear el estado de validación
+            email_valid = False
+            password_valid = False
+
             email_input = ui.input(label='Correo electrónico', placeholder='ejemplo@correo.com')\
                 .classes('w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent')
 
             email_error = ui.label('').classes('text-red-600 text-sm').style('min-height: 1.25rem')
-
-            def validate_email():
-                email = email_input.value or ''
-                if not isNotEmpty(email):
-                    email_error.text = 'El correo no puede estar vacío.'
-                else:
-                    valid, msg = isValidEmail(email)
-                    email_error.text = '' if valid else msg
-
-            email_input.on('blur', validate_email)
 
             password_input = ui.input(label='Contraseña', placeholder='********', password=True)\
                 .classes('w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent')
 
             password_error = ui.label('').classes('text-red-600 text-sm').style('min-height: 1.25rem')
 
+            def update_login_button_state():
+                login_button.enabled = email_valid and password_valid
+
+            def validate_email():
+                nonlocal email_valid
+                email = email_input.value or ''
+                if not isNotEmpty(email):
+                    email_error.text = 'El correo no puede estar vacío.'
+                    email_valid = False
+                else:
+                    valid, msg = isValidEmail(email)
+                    email_error.text = '' if valid else msg
+                    email_valid = valid
+                update_login_button_state()
+
+            email_input.on('blur', validate_email)
+            email_input.on('input', lambda: email_input.on('blur', validate_email, delay=500))
+
             def validate_password():
+                nonlocal password_valid
                 password = password_input.value or ''
-                password_error.text = '' if isNotEmpty(password) else 'La contraseña no puede estar vacía.'
+                if not isNotEmpty(password):
+                    password_error.text = 'La contraseña no puede estar vacía.'
+                    password_valid = False
+                else:
+                    password_error.text = ''
+                    password_valid = True
+                update_login_button_state()
 
             password_input.on('blur', validate_password)
+            password_input.on('input', lambda: password_input.on('blur', validate_password, delay=500))
 
             async def on_submit():
                 validate_email()
                 validate_password()
-                if email_error.text or password_error.text:
+                if not (email_valid and password_valid):
                     return
+                
                 result = loginUser(email_input.value, password_input.value)
                 if result.get('success'):
-
                     token = result.get('accessToken')
-
                     ui.run_javascript(f'localStorage.setItem("accessToken", "{token}");')
-
                     ui.notify(f"¡Bienvenido {result.get('nombre', '')}!", color='green')
                     await asyncio.sleep(2)
 
@@ -100,16 +118,17 @@ def login():
                         ui.run_javascript("window.location.href='/cliente'")
                     else:
                         ui.notify('Rol no reconocido', color='red')
-                        
                 else:
                     ui.notify(result.get('message', 'Error al iniciar sesión.'), color='red')
 
-            ui.button(
+            # Crear el botón inicialmente deshabilitado
+            login_button = ui.button(
                 'Entrar',
                 on_click=on_submit
             ).classes(
                 'w-full bg-[#008020!important] text-[#F0F4FF!important] text-[18px!important] font-semibold py-[14px!important] px-[24px!important] rounded-md hover:bg-[#006414!important] transition mt-2'
             )
+            login_button.enabled = False
 
             ui.html('¿No tienes cuenta? <a href="/register" class="text-[#1E4DBB] hover:underline ml-1">Regístrate</a>')\
                 .classes('mt-6 text-center text-sm text-gray-700')

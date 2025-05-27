@@ -50,6 +50,6 @@ def homePage():
             ui.label('Reserva tu vuelo hoy y vive la experiencia Ixavia Airlines').classes('text-2xl md:text-3xl font-extrabold mb-4 md:mb-6')
             ui.button('Reservar Ahora').classes(
                 '!w-full !sm:w-auto !min-w-[220px] !bg-[#d97d3a] !hover:bg-[#b3631f] !px-8 !py-3 !rounded-lg !font-bold !text-lg !shadow-md !transition-colors'
-            )
+            ).on('click', lambda e: ui.run_javascript('window.location.href = "/login"'))
 
     Footer()
