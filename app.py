@@ -51,6 +51,10 @@ def redirigirSiToken(rutas_rol):
     </script>
     """
 
+@ui.page('/ping')
+def pingPage():
+    print('Pinged!')
+
 @ui.page('/')
 def mainPage():
     ui.add_head_html(redirigirSiToken({'Administrador':'/admin','Agente':'/agente','Cliente':'/cliente'}))
