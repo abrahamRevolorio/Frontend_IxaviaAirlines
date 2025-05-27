@@ -78,7 +78,11 @@ def homePageAdmin():
                         ('Crear Usuario', 'green'),
                         ('Ver Usuarios', 'blue'),
                         ('Actualizar Usuario', 'yellow'),
-                        ('Eliminar Usuario', 'red')
+                        ('Eliminar Usuario', 'red'),
+                        ('Crear Rol', 'green'),
+                        ('Ver Roles', 'blue'),
+                        ('Actualizar Rol', 'yellow'),
+                        ('Eliminar Rol', 'red')
                     ])
                 elif link == '/vuelos':
                     mostrarCrudModal('Gestión de Vuelos', [
