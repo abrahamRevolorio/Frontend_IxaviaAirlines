@@ -1,12 +1,14 @@
 from nicegui import ui
 from components.navbar import Navbar
 from components.footer import Footer
+from utils.apiClient import logout
 
 def homePageAgent():
     opcionesNavbar = [
         {
             'texto': 'Logout',
             'onClickJs': "localStorage.clear(); window.location.href = '/'",
+            'onClickPy': logout,
             'clases': 'mx-2 py-2 px-6 rounded border border-[#486142] transition font-bold text-base hover:bg-[#1E4DBB] hover:text-[#F0F4FF]',
             'bgColor': "#AA0000",
             'textColor': '#F0F4FF'

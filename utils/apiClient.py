@@ -4,6 +4,8 @@ import httpx
 
 BASE_URL = "https://backend-ixaviaairlines.onrender.com"
 
+tokenGlobal = None
+
 def decodeToken(token):
     try:
         payload = jwt.decode(token, options={"verify_signature": False})
@@ -13,12 +15,15 @@ def decodeToken(token):
         return None
 
 def loginUser(email: str, password: str) -> dict:
+    global tokenGlobal
     url = f"{BASE_URL}/auth/login"
     try:
         response = requests.post(url, json={"email": email, "password": password})
         if response.status_code == 200:
             data = response.json()
             accessToken = data.get("accessToken")
+
+            tokenGlobal = data.get("accessToken")
 
             if not accessToken:
                 return {"success": False, "message": "Error al obtener el token de acceso"}
@@ -63,9 +68,18 @@ def loginUser(email: str, password: str) -> dict:
         return {"success": False, "message": f"Error de conexión: {e}"}
 
 
-async def postToBackend(endpoint: str, payload: dict, token: str = None) -> dict:
+async def postToBackend(endpoint: str, payload: dict) -> dict:
     url = f"{BASE_URL}/{endpoint}"
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+    global tokenGlobal
+
+    token = tokenGlobal
+
+    headers = {}
+
+    if token is not None:
+        headers = {"Authorization": f"Bearer {token}"}
+
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(url, json=payload, headers=headers)
@@ -121,3 +135,8 @@ async def deleteFromBackend(endpoint: str, token: str = None) -> dict:
             }
         except Exception as e:
             return {"success": False, "message": f"Error de conexión: {e}"}
+        
+def logout():
+    global tokenGlobal
+    print("Se ha cerrado la sesión")
+    tokenGlobal = None

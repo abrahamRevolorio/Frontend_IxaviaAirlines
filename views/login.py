@@ -121,7 +121,6 @@ def login():
                 else:
                     ui.notify(result.get('message', 'Error al iniciar sesión.'), color='red')
 
-            # Crear el botón inicialmente deshabilitado
             login_button = ui.button(
                 'Entrar',
                 on_click=on_submit
