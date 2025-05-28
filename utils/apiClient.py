@@ -1,5 +1,6 @@
 import requests
 import jwt
+import httpx
 
 BASE_URL = "https://backend-ixaviaairlines.onrender.com"
 
@@ -26,14 +27,14 @@ def loginUser(email: str, password: str) -> dict:
 
             if not userData:
                 return {"success": False, "message": "Error al decodificar el token"}
-            
-            if userData.get("rol") == "Administrador" or userData.get("rol") == "Empleado":
+
+            if userData.get("rol") in ["Administrador", "Empleado"]:
                 return {
-                    "success": True, 
-                    "accessToken": accessToken, 
+                    "success": True,
+                    "accessToken": accessToken,
                     "userId": userData.get("userId"),
-                    "rol": userData.get("rol"), 
-                    "nombre": userData.get("nombre"), 
+                    "rol": userData.get("rol"),
+                    "nombre": userData.get("nombre"),
                     "apellido": userData.get("apellido"),
                     "dpi": userData.get("dpi"),
                     "nit": userData.get("nit"),
@@ -41,14 +42,12 @@ def loginUser(email: str, password: str) -> dict:
                     "edad": userData.get("edad"),
                 }
             else:
-
-                return{
-
-                    "success": True, 
-                    "accessToken": accessToken, 
+                return {
+                    "success": True,
+                    "accessToken": accessToken,
                     "userId": userData.get("userId"),
-                    "rol": userData.get("rol"), 
-                    "nombre": userData.get("nombre"), 
+                    "rol": userData.get("rol"),
+                    "nombre": userData.get("nombre"),
                     "apellido": userData.get("apellido"),
                     "dpi": userData.get("dpi"),
                     "telefono": userData.get("telefono"),
@@ -57,35 +56,68 @@ def loginUser(email: str, password: str) -> dict:
                     "nacionalidad": userData.get("nacionalidad"),
                     "edad": userData.get("edad"),
                     "telefonoEmergencia": userData.get("telefonoEmergencia"),
-
                 }
-
         else:
             return {"success": False, "message": response.json().get("detail", "Error al iniciar sesión")}
     except Exception as e:
         return {"success": False, "message": f"Error de conexión: {e}"}
 
-def registerUser(nombres: str, apellidos: str, email: str, password: str, dpi: str,
-                 telefono: str, direccion: str, nacimiento: str,
-                 nacionalidad: str, telefonoEmergencia: str) -> dict:
-    url = f"{BASE_URL}/auth/register"
-    payload = {
-        "nombres": nombres,
-        "apellidos": apellidos,
-        "email": email,
-        "password": password,
-        "dpi": dpi,
-        "telefono": telefono,
-        "direccion": direccion,
-        "nacimiento": nacimiento,
-        "nacionalidad": nacionalidad,
-        "telefonoEmergencia": telefonoEmergencia
-    }
-    try:
-        response = requests.post(url, json=payload)
-        if response.status_code == 201:
-            return {"success": True}
-        else:
-            return {"success": False, "message": response.json().get("detail", "Error al registrar usuario")}
-    except Exception as e:
-        return {"success": False, "message": f"Error de conexión: {e}"}
+
+async def postToBackend(endpoint: str, payload: dict, token: str = None) -> dict:
+    url = f"{BASE_URL}/{endpoint}"
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, json=payload, headers=headers)
+            success = response.status_code in [200, 201]
+            return {
+                "success": success,
+                "data": response.json() if success else None,
+                "message": response.json().get("detail", "Éxito" if success else "Error")
+            }
+        except Exception as e:
+            return {"success": False, "message": f"Error de conexión: {e}"}
+
+async def putToBackend(endpoint: str, payload: dict, token: str = None) -> dict:
+    url = f"{BASE_URL}/{endpoint}"
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.put(url, json=payload, headers=headers)
+            success = response.status_code in [200, 204]
+            return {
+                "success": success,
+                "data": response.json() if success and response.content else None,
+                "message": response.json().get("detail", "Actualizado correctamente") if response.content else "Actualizado correctamente"
+            }
+        except Exception as e:
+            return {"success": False, "message": f"Error de conexión: {e}"}
+
+async def getFromBackend(endpoint: str, params: dict = None, token: str = None) -> dict:
+    url = f"{BASE_URL}/{endpoint}"
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, params=params, headers=headers)
+            success = response.status_code == 200
+            return {
+                "success": success,
+                "data": response.json() if success else None,
+                "message": response.json().get("detail", "Datos obtenidos") if success else "Error"
+            }
+        except Exception as e:
+            return {"success": False, "message": f"Error de conexión: {e}"}
+
+async def deleteFromBackend(endpoint: str, token: str = None) -> dict:
+    url = f"{BASE_URL}/{endpoint}"
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.delete(url, headers=headers)
+            success = response.status_code in [200, 204]
+            return {
+                "success": success,
+                "message": "Eliminado correctamente" if success else response.json().get("detail", "Error al eliminar")
+            }
+        except Exception as e:
+            return {"success": False, "message": f"Error de conexión: {e}"}

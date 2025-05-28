@@ -1,5 +1,5 @@
 from nicegui import ui
-from utils.apiClient import registerUser
+from utils.apiClient import postToBackend
 from utils.validators import isNotEmpty, isValidEmail, isSamePassword, isValidDpi, isValidPhone
 from components.navbar import Navbar
 from components.footer import Footer
@@ -45,14 +45,50 @@ def register():
         
         direccion = ui.input(label='Dirección').classes('w-full mb-2')
         error_direccion = ui.label('').classes('text-red-500 text-xs -mt-2 mb-2')
-        
-        nacionalidad = ui.input(label='Nacionalidad').classes('w-full mb-2')
+
+        # Nacionalidad como combo desplegable con países
+        paises = [
+            'Afganistán', 'Albania', 'Alemania', 'Andorra', 'Angola', 'Antigua y Barbuda', 'Arabia Saudita',
+            'Argelia', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaiyán', 'Bahamas', 'Bangladés',
+            'Barbados', 'Bélgica', 'Belice', 'Benín', 'Bielorrusia', 'Birmania', 'Bolivia', 'Bosnia y Herzegovina',
+            'Botsuana', 'Brasil', 'Brunéi', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Camboya',
+            'Camerún', 'Canadá', 'Catar', 'Chile', 'China', 'Chipre', 'Colombia', 'Comoras', 'Corea del Norte',
+            'Corea del Sur', 'Costa de Marfil', 'Costa Rica', 'Croacia', 'Cuba', 'Dinamarca', 'Dominica',
+            'Ecuador', 'Egipto', 'El Salvador', 'Emiratos Árabes Unidos', 'Eritrea', 'Eslovaquia', 'Eslovenia',
+            'España', 'Estados Unidos', 'Estonia', 'Etiopía', 'Filipinas', 'Finlandia', 'Fiyi', 'Francia',
+            'Gabón', 'Gambia', 'Georgia', 'Ghana', 'Granada', 'Grecia', 'Guatemala', 'Guinea', 'Guinea-Bisáu',
+            'Guinea Ecuatorial', 'Guyana', 'Haití', 'Honduras', 'Hungría', 'India', 'Indonesia', 'Irak', 'Irán',
+            'Irlanda', 'Islandia', 'Islas Salomón', 'Israel', 'Italia', 'Jamaica', 'Japón', 'Jordania', 'Kazajistán',
+            'Kenia', 'Kirguistán', 'Kiribati', 'Kuwait', 'Laos', 'Lesoto', 'Letonia', 'Líbano', 'Liberia',
+            'Libia', 'Liechtenstein', 'Lituania', 'Luxemburgo', 'Madagascar', 'Malasia', 'Malaui', 'Maldivas',
+            'Malí', 'Malta', 'Marruecos', 'Mauricio', 'Mauritania', 'México', 'Micronesia', 'Moldavia', 'Mónaco',
+            'Mongolia', 'Montenegro', 'Mozambique', 'Namibia', 'Nauru', 'Nepal', 'Nicaragua', 'Níger', 'Nigeria',
+            'Noruega', 'Nueva Zelanda', 'Omán', 'Países Bajos', 'Pakistán', 'Palaos', 'Panamá', 'Papúa Nueva Guinea',
+            'Paraguay', 'Perú', 'Polonia', 'Portugal', 'Reino Unido', 'República Centroafricana', 'República Checa',
+            'República del Congo', 'República Democrática del Congo', 'República Dominicana', 'Ruanda', 'Rumania',
+            'Rusia', 'Samoa', 'San Cristóbal y Nieves', 'San Marino', 'San Vicente y las Granadinas', 'Santa Lucía',
+            'Santo Tomé y Príncipe', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leona', 'Singapur', 'Siria',
+            'Somalia', 'Sri Lanka', 'Sudáfrica', 'Sudán', 'Sudán del Sur', 'Suecia', 'Suiza', 'Surinam', 'Tailandia',
+            'Tanzania', 'Tayikistán', 'Timor Oriental', 'Togo', 'Tonga', 'Trinidad y Tobago', 'Túnez', 'Turkmenistán',
+            'Turquía', 'Tuvalu', 'Ucrania', 'Uganda', 'Uruguay', 'Uzbekistán', 'Vanuatu', 'Venezuela', 'Vietnam',
+            'Yemen', 'Yibuti', 'Zambia', 'Zimbabue'
+        ]
+        nacionalidad = ui.select(paises, label='Nacionalidad').classes('w-full mb-2')
         error_nacionalidad = ui.label('').classes('text-red-500 text-xs -mt-2 mb-2')
         
         telefono_emergencia = ui.input(label='Teléfono de Emergencia').classes('w-full mb-2')
         error_telefono_emergencia = ui.label('').classes('text-red-500 text-xs -mt-2 mb-2')
-        
-        nacimiento = ui.input(label='Fecha de Nacimiento (yyyy-mm-dd)').classes('w-full mb-2')
+
+        with ui.column().classes('w-full mb-2'):
+            ui.label('Fecha de Nacimiento')
+            with ui.input() as nacimiento:
+                with ui.menu().props('no-parent-event') as menu:
+                    with ui.date().bind_value(nacimiento):
+                        with ui.row().classes('justify-end'):
+                            ui.button('Cerrar', on_click=menu.close).props('flat')
+                with nacimiento.add_slot('append'):
+                    ui.icon('edit_calendar').on('click', menu.open).classes('cursor-pointer')
+
         error_nacimiento = ui.label('').classes('text-red-500 text-xs -mt-2 mb-6')
 
         validation_states = {
@@ -73,7 +109,7 @@ def register():
             try:
                 datetime.strptime(fecha, '%Y-%m-%d')
                 return True
-            except ValueError:
+            except Exception:
                 return False
 
         def validate_field(field, value, validator, error_label, error_msg=None, field_name=None):
@@ -107,38 +143,69 @@ def register():
         direccion.on('blur', lambda: validate_field(direccion, direccion.value, isNotEmpty, error_direccion, 'Este campo no puede estar vacío', 'direccion'))
         nacionalidad.on('blur', lambda: validate_field(nacionalidad, nacionalidad.value, isNotEmpty, error_nacionalidad, 'Este campo no puede estar vacío', 'nacionalidad'))
         telefono_emergencia.on('blur', lambda: validate_field(telefono_emergencia, telefono_emergencia.value, isValidPhone, error_telefono_emergencia, 'Teléfono debe tener 8 dígitos', 'telefono_emergencia'))
-        nacimiento.on('blur', lambda: 
-            (error_nacimiento.set_text('' if validate_fecha(nacimiento.value) else 'Fecha inválida. Formato: yyyy-mm-dd'),
-             validation_states.update({'nacimiento': validate_fecha(nacimiento.value)}),
-             update_register_button_state())
-        )
+        nacimiento.on('blur', lambda: (
+            error_nacimiento.set_text('' if validate_fecha(nacimiento.value) else 'Fecha inválida. Formato: yyyy-mm-dd'),
+            validation_states.update({'nacimiento': validate_fecha(nacimiento.value)}),
+            update_register_button_state()
+        ))
+
+        registroExitoso = None
 
         async def handle_register():
+            global registroExitoso
+            registroExitoso = None
+
             if not all(validation_states.values()):
-                ui.notify('Por favor corrige los errores en el formulario', type='negative')
+                registroExitoso = 'validacion'
                 return
-            
-            result = registerUser(
-                nombres.value.strip(),
-                apellidos.value.strip(),
-                email.value.strip(),
-                password.value.strip(),
-                dpi.value.strip(),
-                telefono.value.strip(),
-                direccion.value.strip(),
-                nacimiento.value.strip(),
-                nacionalidad.value.strip(),
-                telefono_emergencia.value.strip()
-            )
-            
-            if result.get('success'):
-                ui.notify('Registro exitoso!', type='positive')
-                await asyncio.sleep(2)
-                ui.run_javascript("window.location.href='/'")
-            else:
-                ui.notify(result.get('message', 'Error al registrar usuario'), type='negative')
 
-        register_button = ui.button('Registrarse', on_click=handle_register).classes('!w-full !py-2 !bg-[#486142] !text-white !hover:bg-[#3a4d36] !transition')
-        register_button.enabled = False
+            data = {
+                'nombres': nombres.value.strip(),
+                'apellidos': apellidos.value.strip(),
+                'email': email.value.strip(),
+                'password': password.value.strip(),
+                'dpi': dpi.value.strip(),
+                'telefono': telefono.value.strip(), 
+                'direccion': direccion.value.strip(),
+                'nacionalidad': nacionalidad.value.strip(),
+                'telefonoEmergencia': telefono_emergencia.value.strip(),
+                'nacimiento': nacimiento.value.strip()
+            }
 
+            try:
+                response = await postToBackend('auth/register', data)
+                if response and response.get('success'):
+                    registroExitoso = True
+                else:
+                    registroExitoso = 'fallo:' + response.get('message', 'Error desconocido')
+            except Exception as e:
+                registroExitoso = 'fallo:' + str(e)
+
+        def on_register_click():
+            asyncio.create_task(handle_register())
+
+            def revisarResultado():
+                global registroExitoso
+                if registroExitoso is None:
+                    return
+                if registroExitoso == True:
+                    ui.notify('Registro exitoso', type='positive')
+                    ui.timer(2.0, lambda: ui.run_javascript("window.location.href='/'"), once=True)
+                elif registroExitoso == 'validacion':
+                    ui.notify('Por favor corrige los errores en el formulario', type='negative')
+                elif isinstance(registroExitoso, str) and registroExitoso.startswith('fallo:'):
+                    mensaje = registroExitoso[6:]
+                    ui.notify('Error en registro: ' + mensaje, type='negative')
+                registroExitoso = None
+                timer.clear()
+
+            timer = ui.timer(0.1, revisarResultado)
+
+        register_button = ui.button(
+            'Registrarse', 
+            on_click=on_register_click
+        ).props('w-full py-3 bg-[#486142] text-white font-bold rounded')
+
+        register_button.disable()
+    
     Footer()

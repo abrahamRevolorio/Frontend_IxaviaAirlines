@@ -26,30 +26,12 @@ def homePageAgent():
         modal.open()
 
     def handleCardClick(link):
-        if link == 'modal_usuarios':
-            mostrarCrudModal('Usuarios y Roles', [
-                ('🆕 Crear Usuario', 'green', '/crear_usuario'),
-                ('👥 Ver Usuarios', 'blue', '/ver_usuarios'),
-                ('✏️ Actualizar Usuario', 'yellow', '/actualizar_usuario'),
-                ('🗑️ Eliminar Usuario', 'red', '/eliminar_usuario'),
-                ('🆕 Crear Rol', 'green', '/crear_rol'),
-                ('👥 Ver Roles', 'blue', '/ver_roles'),
-                ('✏️ Actualizar Rol', 'yellow', '/actualizar_rol'),
-                ('🗑️ Eliminar Rol', 'red', '/eliminar_rol')
-            ])
-        elif link == '/vuelos':
+        if link == '/vuelos':
             mostrarCrudModal('Gestión de Vuelos', [
                 ('🛫 Crear Vuelo', 'green', '/crear_vuelo'),
                 ('📋 Ver Vuelos', 'blue', '/ver_vuelos'),
                 ('🛠️ Actualizar Vuelo', 'yellow', '/actualizar_vuelo'),
                 ('🗑️ Eliminar Vuelo', 'red', '/eliminar_vuelo')
-            ])
-        elif link == '/aviones':
-            mostrarCrudModal('Capacidad de Aviones', [
-                ('✈️ Crear Avión', 'green', '/crear_avion'),
-                ('📋 Ver Aviones', 'blue', '/ver_aviones'),
-                ('🛠️ Actualizar Avión', 'yellow', '/actualizar_avion'),
-                ('🗑️ Eliminar Avión', 'red', '/eliminar_avion')
             ])
         elif link == '/reportes':
             mostrarCrudModal('Reportes y Auditoría', [
@@ -67,10 +49,10 @@ def homePageAgent():
             ])
         elif link == '/clientes':
             mostrarCrudModal('Clientes', [
-                ('👤 Registrar Cliente', 'green', '/registrar_cliente'),
-                ('📋 Ver Clientes', 'blue', '/ver_clientes'),
-                ('✏️ Actualizar Cliente', 'yellow', '/actualizar_cliente'),
-                ('🗑️ Eliminar Cliente', 'red', '/eliminar_cliente')
+                ('👤 Registrar Cliente', 'green', '/crearCliente'),
+                ('📋 Ver Clientes', 'blue', '/verCliente'),
+                ('✏️ Actualizar Cliente', 'yellow', '/actualizarCliente'),
+                ('🗑️ Eliminar Cliente', 'red', '/eliminarCliente')
             ])
         else:
             ui.open(link)
