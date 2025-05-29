@@ -1,6 +1,7 @@
 import requests
 import jwt
 import httpx
+import json
 
 BASE_URL = "https://backend-ixaviaairlines.onrender.com"
 
@@ -92,9 +93,16 @@ async def postToBackend(endpoint: str, payload: dict) -> dict:
         except Exception as e:
             return {"success": False, "message": f"Error de conexión: {e}"}
 
-async def putToBackend(endpoint: str, payload: dict, token: str = None) -> dict:
+async def putToBackend(endpoint: str, payload: dict) -> dict:
     url = f"{BASE_URL}/{endpoint}"
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+    global tokenGlobal
+    token = tokenGlobal
+
+    headers = {}
+    if token is not None:
+        headers = {"Authorization": f"Bearer {token}"}
+
     async with httpx.AsyncClient() as client:
         try:
             response = await client.put(url, json=payload, headers=headers)
@@ -102,14 +110,22 @@ async def putToBackend(endpoint: str, payload: dict, token: str = None) -> dict:
             return {
                 "success": success,
                 "data": response.json() if success and response.content else None,
-                "message": response.json().get("detail", "Actualizado correctamente") if response.content else "Actualizado correctamente"
+                "message": response.json().get("detail", "Éxito" if success else "Error")
             }
         except Exception as e:
             return {"success": False, "message": f"Error de conexión: {e}"}
 
-async def getFromBackend(endpoint: str, params: dict = None, token: str = None) -> dict:
+async def getFromBackend(endpoint: str, params: dict = None) -> dict:
     url = f"{BASE_URL}/{endpoint}"
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+    global tokenGlobal
+    token = tokenGlobal
+
+    headers = {}
+
+    if token is not None:
+        headers = {"Authorization": f"Bearer {token}"}
+
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(url, params=params, headers=headers)
@@ -117,21 +133,67 @@ async def getFromBackend(endpoint: str, params: dict = None, token: str = None) 
             return {
                 "success": success,
                 "data": response.json() if success else None,
-                "message": response.json().get("detail", "Datos obtenidos") if success else "Error"
+                "message": response.json().get("detail", "Éxito" if success else "Error")
             }
         except Exception as e:
             return {"success": False, "message": f"Error de conexión: {e}"}
+        
+async def findFromBackend(url: str, payload: dict) -> dict:
+    global tokenGlobal
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
 
-async def deleteFromBackend(endpoint: str, token: str = None) -> dict:
+    if tokenGlobal:
+        headers["Authorization"] = f"Bearer {tokenGlobal}"
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.request(
+                method="GET",
+                url=f'{BASE_URL}/{url}',
+                content=json.dumps(payload).encode("utf-8"),
+                headers=headers
+            )
+
+            success = response.status_code == 200
+            try:
+                response_data = response.json() if success else None
+                message = response_data.get("detail", "Éxito" if success else "Error del servidor")
+            except ValueError:
+                response_data = None
+                message = "Respuesta no es JSON válido"
+
+            return {
+                "success": success,
+                "data": response_data,
+                "message": message
+            }
+
+        except httpx.ConnectError as e:
+            return {"success": False, "data": None, "message": f"Error de conexión: {str(e)}"}
+        except Exception as e:
+            return {"success": False, "data": None, "message": f"Error inesperado: {str(e)}"}
+
+async def deleteFromBackend(endpoint: str) -> dict:
     url = f"{BASE_URL}/{endpoint}"
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
+
+    global tokenGlobal
+    token = tokenGlobal
+
+    headers = {}
+    if token is not None:
+        headers = {"Authorization": f"Bearer {token}"}
+
     async with httpx.AsyncClient() as client:
         try:
             response = await client.delete(url, headers=headers)
             success = response.status_code in [200, 204]
             return {
                 "success": success,
-                "message": "Eliminado correctamente" if success else response.json().get("detail", "Error al eliminar")
+                "data": response.json() if success and response.content else None,
+                "message": response.json().get("detail", "Éxito" if success else "Error")
             }
         except Exception as e:
             return {"success": False, "message": f"Error de conexión: {e}"}

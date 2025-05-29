@@ -53,8 +53,7 @@ def homePageAgent():
             mostrarCrudModal('Clientes', [
                 ('👤 Registrar Cliente', 'green', '/crearCliente'),
                 ('📋 Ver Clientes', 'blue', '/verCliente'),
-                ('✏️ Actualizar Cliente', 'yellow', '/actualizarCliente'),
-                ('🗑️ Eliminar Cliente', 'red', '/eliminarCliente')
+                ('✏️ Actualizar Cliente', 'yellow', '/editarCliente')
             ])
         else:
             ui.open(link)
