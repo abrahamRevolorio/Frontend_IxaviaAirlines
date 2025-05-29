@@ -29,11 +29,14 @@ def homePageAdmin():
 
     def handleCardClick(link):
         if link == 'modal_usuarios':
-            mostrarCrudModal('Usuarios y Roles', [
-                ('🆕 Crear Usuario', 'green', '/crear_usuario'),
+            mostrarCrudModal('Usuarios', [
+                ('🆕 Crear Usuario', 'green', '/crearAgente'),
                 ('👥 Ver Usuarios', 'blue', '/ver_usuarios'),
                 ('✏️ Actualizar Usuario', 'yellow', '/actualizar_usuario'),
                 ('🗑️ Eliminar Usuario', 'red', '/eliminar_usuario'),
+            ])
+        elif link == '/roles':
+            mostrarCrudModal('Roles', [
                 ('🆕 Crear Rol', 'green', '/crear_rol'),
                 ('👥 Ver Roles', 'blue', '/ver_roles'),
                 ('✏️ Actualizar Rol', 'yellow', '/actualizar_rol'),
@@ -96,10 +99,22 @@ def homePageAdmin():
         with ui.element('div').classes('grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12'):
             cards = [
                 {
-                    'titulo': 'Usuarios y Roles',
+                    'titulo': 'Usuarios',
                     'descripcion': 'Administra usuarios y asigna roles con facilidad.',
                     'img': 'https://cdn-icons-png.freepik.com/256/4735/4735356.png?semt=ais_incoming',
                     'link': 'modal_usuarios'
+                },
+                {
+                    'titulo': 'Clientes',
+                    'descripcion': 'Registra y edita la información de los clientes.',
+                    'img': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzZJkMOr4OMV2ZXb_ZaIntWCfu-PI1HImuzA&s',
+                    'link': '/clientes'
+                },
+                {
+                    'titulo': 'Roles',
+                    'descripcion': 'Asigna roles y permisos a los usuarios.',
+                    'img': 'https://cdn-icons-png.flaticon.com/512/10426/10426140.png',
+                    'link': '/roles'
                 },
                 {
                     'titulo': 'Gestión de Vuelos',
@@ -124,12 +139,6 @@ def homePageAdmin():
                     'descripcion': 'Gestiona reservas, pagos simulados y emisión de boletos.',
                     'img': 'https://images.vexels.com/media/users/3/220739/isolated/preview/364a8081b080c3b1b1af9abb49ecf40e-icono-plano-de-entradas-de-cine-clasico.png',
                     'link': '/reservas'
-                },
-                {
-                    'titulo': 'Clientes',
-                    'descripcion': 'Registra y edita la información de los clientes.',
-                    'img': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzZJkMOr4OMV2ZXb_ZaIntWCfu-PI1HImuzA&s',
-                    'link': '/clientes'
                 }
             ]
 

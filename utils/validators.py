@@ -20,5 +20,12 @@ def isSamePassword(pw1: str, pw2: str) -> bool:
 def isValidDpi(dpi: str) -> bool:
     return re.fullmatch(r"\d{13}", dpi) is not None
 
+def isValidAge(age) -> bool:
+    try:
+        ageInt = int(age)
+        return 1 <= ageInt <= 105
+    except ValueError:
+        return False
+
 def isValidPhone(phone: str) -> bool:
     return re.fullmatch(r"\d{8}", phone) is not None
