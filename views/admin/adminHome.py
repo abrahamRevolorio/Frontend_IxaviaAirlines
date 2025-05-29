@@ -31,7 +31,7 @@ def homePageAdmin():
         if link == 'modal_usuarios':
             mostrarCrudModal('Usuarios', [
                 ('🆕 Crear Usuario', 'green', '/crearAgente'),
-                ('👥 Ver Usuarios', 'blue', '/ver_usuarios'),
+                ('👥 Ver Usuarios', 'blue', '/verAgentes'),
                 ('✏️ Actualizar Usuario', 'yellow', '/actualizar_usuario'),
                 ('🗑️ Eliminar Usuario', 'red', '/eliminar_usuario'),
             ])
