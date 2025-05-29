@@ -8,6 +8,7 @@ from views.agent.agentHome import homePageAgent
 from views.agent.client.createClient import createClient
 from views.agent.client.editClient import editClient
 from views.agent.client.viewClient import viewClient
+from views.agent.client.deleteClient import deleteClient
 
 # Tailwind CSS
 ui.add_head_html('''
@@ -105,5 +106,10 @@ def editClientPage():
 def viewClientPage():
     ui.add_head_html(verificarAcceso(['Agente', 'Administrador']))
     viewClient()
+
+@ui.page('/eliminarCliente')
+def deleteClientPage():
+    ui.add_head_html(verificarAcceso(['Agente', 'Administrador']))
+    deleteClient()
 
 ui.run(title="Ixavia Airline", favicon='./assets/logoIxavia.png')

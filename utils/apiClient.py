@@ -176,27 +176,45 @@ async def findFromBackend(url: str, payload: dict) -> dict:
         except Exception as e:
             return {"success": False, "data": None, "message": f"Error inesperado: {str(e)}"}
 
-async def deleteFromBackend(endpoint: str) -> dict:
-    url = f"{BASE_URL}/{endpoint}"
-
+async def deleteFromBackend(endpoint: str, payload: dict) -> dict:
     global tokenGlobal
-    token = tokenGlobal
 
-    headers = {}
-    if token is not None:
-        headers = {"Authorization": f"Bearer {token}"}
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+
+    if tokenGlobal:
+        headers["Authorization"] = f"Bearer {tokenGlobal}"
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.delete(url, headers=headers)
+            response = await client.request(
+                method="DELETE",
+                url=f"{BASE_URL}/{endpoint}",
+                content=json.dumps(payload).encode("utf-8"),
+                headers=headers
+            )
+
             success = response.status_code in [200, 204]
+            try:
+                response_data = response.json() if success else None
+                message = response_data.get("detail", "Éxito" if success else "Error del servidor")
+            except ValueError:
+                response_data = None
+                message = "Respuesta no es JSON válido"
+
             return {
                 "success": success,
-                "data": response.json() if success and response.content else None,
-                "message": response.json().get("detail", "Éxito" if success else "Error")
+                "data": response_data,
+                "message": message
             }
+
+        except httpx.ConnectError as e:
+            return {"success": False, "data": None, "message": f"Error de conexión: {str(e)}"}
         except Exception as e:
-            return {"success": False, "message": f"Error de conexión: {e}"}
+            return {"success": False, "data": None, "message": f"Error inesperado: {str(e)}"}
+
         
 def logout():
     global tokenGlobal

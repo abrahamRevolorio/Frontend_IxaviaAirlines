@@ -51,7 +51,6 @@ def login():
         ):
             ui.label('Iniciar sesión').classes('text-3xl font-bold mb-4 text-center text-gray-800')
 
-            # Variables para rastrear el estado de validación
             email_valid = False
             password_valid = False
 

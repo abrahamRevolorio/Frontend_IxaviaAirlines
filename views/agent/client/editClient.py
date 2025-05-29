@@ -26,7 +26,7 @@ def editClient():
 
     Navbar(opcionesNavbar)
 
-    ui.label('Editar Información del Usuario').classes('text-2xl font-bold mb-4 mt-8')
+    ui.label('Editar Información del Usuario').classes('!text-2xl !font-bold !mb-4 !mt-8')
 
     with ui.card().classes('max-w-3xl w-full mx-auto p-6 shadow-lg'):
         dpi_input = None
@@ -143,7 +143,7 @@ def editClient():
             dpi_input = ui.input('DPI').classes('flex-grow')
             error_labels['dpi'] = ui.label('').classes('text-red-500 text-xs')
             buscar_btn = ui.button('Buscar Usuario', on_click=buscar_usuario).classes(
-                'bg-[#1E4DBB] text-white font-bold py-2 px-6 rounded ml-2'
+                '!bg-[#1E4DBB] !text-white !font-bold !py-2 !px-6 !rounded !ml-2'
             )
 
         fields = {
@@ -211,7 +211,7 @@ def editClient():
         ))
 
         guardar_btn = ui.button('Guardar Cambios', on_click=editar).classes(
-            'bg-[#002678] text-white font-bold py-2 px-6 rounded'
+            '!bg-[#002678] !text-white !font-bold !py-2 !px-6 !rounded'
         ).props('disable')
 
     Footer()

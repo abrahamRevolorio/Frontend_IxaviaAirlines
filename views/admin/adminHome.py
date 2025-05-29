@@ -69,10 +69,10 @@ def homePageAdmin():
             ])
         elif link == '/clientes':
             mostrarCrudModal('Clientes', [
-                ('👤 Registrar Cliente', 'green', '/registrar_cliente'),
-                ('📋 Ver Clientes', 'blue', '/ver_clientes'),
-                ('✏️ Actualizar Cliente', 'yellow', '/actualizar_cliente'),
-                ('🗑️ Eliminar Cliente', 'red', '/eliminar_cliente')
+                ('👤 Registrar Cliente', 'green', '/crearCliente'),
+                ('📋 Ver Clientes', 'blue', '/verCliente'),
+                ('✏️ Actualizar Cliente', 'yellow', '/editarCliente'),
+                ('🗑️ Eliminar Cliente', 'red', '/eliminarCliente')
             ])
         else:
             ui.open(link)
