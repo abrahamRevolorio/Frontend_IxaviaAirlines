@@ -30,10 +30,10 @@ def homePageAdmin():
     def handleCardClick(link):
         if link == 'modal_usuarios':
             mostrarCrudModal('Usuarios', [
-                ('🆕 Crear Usuario', 'green', '/crearAgente'),
-                ('👥 Ver Usuarios', 'blue', '/verAgentes'),
-                ('✏️ Actualizar Usuario', 'yellow', '/actualizar_usuario'),
-                ('🗑️ Eliminar Usuario', 'red', '/eliminar_usuario'),
+                ('🆕 Crear Agente', 'green', '/crearAgente'),
+                ('👥 Ver Agente', 'blue', '/verAgentes'),
+                ('✏️ Actualizar Agente', 'yellow', '/editarAgente'),
+                ('🗑️ Eliminar Agente', 'red', '/eliminarAgente'),
             ])
         elif link == '/roles':
             mostrarCrudModal('Roles', [
@@ -99,8 +99,8 @@ def homePageAdmin():
         with ui.element('div').classes('grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12'):
             cards = [
                 {
-                    'titulo': 'Usuarios',
-                    'descripcion': 'Administra usuarios y asigna roles con facilidad.',
+                    'titulo': 'Agentes',
+                    'descripcion': 'Administra agentes.',
                     'img': 'https://cdn-icons-png.freepik.com/256/4735/4735356.png?semt=ais_incoming',
                     'link': 'modal_usuarios'
                 },

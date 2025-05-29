@@ -3,9 +3,9 @@ import asyncio
 from components.navbar import Navbar
 from components.footer import Footer
 from utils.apiClient import logout, putToBackend, findFromBackend
-from utils.validators import isNotEmpty, isValidEmail, isValidDpi, isValidPhone
+from utils.validators import isNotEmpty, isValidEmail, isValidDpi, isValidPhone, isValidAge
 
-def editClient():
+def editAgent():
     opcionesNavbar = [
         {
             'texto': 'Regresar',
@@ -26,7 +26,7 @@ def editClient():
 
     Navbar(opcionesNavbar)
 
-    ui.label('Editar Información del Usuario').classes('!text-2xl !font-bold !mb-4 !mt-8')
+    ui.label('Editar Información del Agente').classes('!text-2xl !font-bold !mb-4 !mt-8')
 
     with ui.card().classes('max-w-3xl w-full mx-auto p-6 shadow-lg'):
         dpi_input = None
@@ -37,14 +37,12 @@ def editClient():
 
         validation_states = {
             'dpi': False,
-            'nombres': False,
-            'apellidos': False,
+            'nombre': False,
+            'apellido': False,
             'email': False,
             'telefono': False,
-            'direccion': False,
-            'fechadenacimiento': False,
-            'nacionalidad': False,
-            'telefonoemergencia': False
+            'nit': False,
+            'edad': False
         }
 
         def validate_field(field, value, validator, error_label, error_msg=None, field_name=None):
@@ -74,9 +72,9 @@ def editClient():
 
             if response and response.get("success") and response.get("data", {}).get("success"):
                 user_info = response["data"]["user_info"]
-                if user_info["rol"] != "Cliente":
-                    ui.notify('El usuario encontrado no es un cliente', type='negative')
-                else:
+                user_info["nombre"] = user_info["nombres"]
+                user_info["apellido"] = user_info["apellidos"]
+                if user_info["rol"] == "Agente":
                     for key, inputWidget in fields.items():
                         if key in user_info:
                             if key != "password":
@@ -89,8 +87,10 @@ def editClient():
                         if field_name in fields and fields[field_name].value:
                             validation_states[field_name] = True
                     update_save_button_state()
+                else:
+                    print("El usuario encontrado no es un agente")
             else:
-                msg = response.get("data", {}).get("message", "Usuario no encontrado") if response else "Error en la conexión"
+                msg = response.get("data", {}).get("message", "Agente no encontrado") if response else "Error en la conexión"
                 ui.notify(msg, type='negative')
                 for inputWidget in fields.values():
                     inputWidget.value = ''
@@ -124,13 +124,13 @@ def editClient():
                         data[k] = valor
 
             data["dpi"] = dpi
-            data["nombre"] = data["nombres"]
-            data["apellido"] = data["apellidos"]
 
             response = await putToBackend('user/update', data)
 
+            print(response)
+
             if response and response.get('success'):
-                ui.notify('Usuario actualizado correctamente', type='positive')
+                ui.notify('Agente actualizado correctamente', type='positive')
                 await asyncio.sleep(2)
                 ui.run_javascript("window.location.href = '/'")
             else:
@@ -145,32 +145,27 @@ def editClient():
         with ui.row().classes('w-full items-center mb-4'):
             dpi_input = ui.input('DPI').classes('flex-grow')
             error_labels['dpi'] = ui.label('').classes('text-red-500 text-xs')
-            buscar_btn = ui.button('Buscar Usuario', on_click=buscar_usuario).classes(
+            buscar_btn = ui.button('Buscar Agente', on_click=buscar_usuario).classes(
                 '!bg-[#1E4DBB] !text-white !font-bold !py-2 !px-6 !rounded !ml-2'
             )
 
         fields = {
-            "nombres": ui.input('Nombres').classes('w-full mb-1').props('disable'),
-            "apellidos": ui.input('Apellidos').classes('w-full mb-1').props('disable'),
+            "nombre": ui.input('Nombre').classes('w-full mb-1').props('disable'),
+            "apellido": ui.input('Apellidos').classes('w-full mb-1').props('disable'),
             "email": ui.input('Email').classes('w-full mb-1').props('disable'),
             "telefono": ui.input('Teléfono').classes('w-full mb-1').props('disable'),
-            "direccion": ui.input('Dirección').classes('w-full mb-1').props('disable'),
-            "fechadenacimiento": ui.input('Fecha de Nacimiento (YYYY-MM-DD)').classes('w-full mb-1').props('disable'),
-            "nacionalidad": ui.input('Nacionalidad').classes('w-full mb-1').props('disable'),
             "edad": ui.input('Edad').classes('w-full mb-1').props('disable'),
-            "telefonoemergencia": ui.input('Teléfono de Emergencia').classes('w-full mb-1').props('disable'),
+            "nit": ui.input('nit').classes('w-full mb-1').props('disable'),
             "password": ui.input('Nueva Contraseña (opcional)').classes('w-full mb-1').props('disable'),
         }
 
         error_labels.update({
-            "nombres": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
-            "apellidos": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
+            "nombre": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
+            "apellido": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
             "email": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
             "telefono": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
-            "direccion": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
-            "fechadenacimiento": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
-            "nacionalidad": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
-            "telefonoemergencia": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2')
+            "edad": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
+            "nit": ui.label('').classes('text-red-500 text-xs -mt-2 mb-2'),
         })
 
         dpi_input.on('blur', lambda: validate_field(
@@ -178,14 +173,14 @@ def editClient():
             'DPI debe tener 13 dígitos', 'dpi'
         ))
 
-        fields["nombres"].on('blur', lambda: validate_field(
-            fields["nombres"], fields["nombres"].value, isNotEmpty, error_labels["nombres"],
-            'Este campo no puede estar vacío', 'nombres'
+        fields["nombre"].on('blur', lambda: validate_field(
+            fields["nombre"], fields["nombre"].value, isNotEmpty, error_labels["nombre"],
+            'Este campo no puede estar vacío', 'nombre'
         ))
 
-        fields["apellidos"].on('blur', lambda: validate_field(
-            fields["apellidos"], fields["apellidos"].value, isNotEmpty, error_labels["apellidos"],
-            'Este campo no puede estar vacío', 'apellidos'
+        fields["apellido"].on('blur', lambda: validate_field(
+            fields["apellido"], fields["apellido"].value, isNotEmpty, error_labels["apellido"],
+            'Este campo no puede estar vacío', 'apellido'
         ))
 
         fields["email"].on('blur', lambda: validate_field(
@@ -198,19 +193,14 @@ def editClient():
             'Teléfono debe tener 8 dígitos', 'telefono'
         ))
 
-        fields["direccion"].on('blur', lambda: validate_field(
-            fields["direccion"], fields["direccion"].value, isNotEmpty, error_labels["direccion"],
-            'Este campo no puede estar vacío', 'direccion'
+        fields["nit"].on('blur', lambda: validate_field(
+            fields["nit"], fields["nit"].value, isNotEmpty, error_labels["nit"],
+            'Este campo no puede estar vacío', 'nit'
         ))
 
-        fields["nacionalidad"].on('blur', lambda: validate_field(
-            fields["nacionalidad"], fields["nacionalidad"].value, isNotEmpty, error_labels["nacionalidad"],
-            'Este campo no puede estar vacío', 'nacionalidad'
-        ))
-
-        fields["telefonoemergencia"].on('blur', lambda: validate_field(
-            fields["telefonoemergencia"], fields["telefonoemergencia"].value, isValidPhone, 
-            error_labels["telefonoemergencia"], 'Teléfono debe tener 8 dígitos', 'telefonoemergencia'
+        fields["edad"].on('blur', lambda: validate_field(
+            fields["edad"], fields["edad"].value, isValidAge, error_labels["edad"],
+            'Se necesita edades entre 1 a 105 años', 'edad'
         ))
 
         guardar_btn = ui.button('Guardar Cambios', on_click=editar).classes(
