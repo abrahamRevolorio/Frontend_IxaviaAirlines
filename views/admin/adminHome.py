@@ -47,7 +47,7 @@ def homePageAdmin():
                 ('🛫 Crear Vuelo', 'green', '/crearVuelo'),
                 ('📋 Ver Vuelos', 'blue', '/verVuelos'),
                 ('🛠️ Actualizar Vuelo', 'yellow', '/actualizar_vuelo'),
-                ('🗑️ Eliminar Vuelo', 'red', '/eliminar_vuelo')
+                ('🗑️ Eliminar Vuelo', 'red', '/eliminarVuelo')
             ])
         elif link == '/aviones':
             mostrarCrudModal('Capacidad de Aviones', [
