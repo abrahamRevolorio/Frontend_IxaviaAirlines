@@ -45,6 +45,9 @@ async def viewReservation():
 
             async def cargarReservaciones():
                 data = await fetchReservation()
+
+                print(data)
+
                 tableRef.rows = data
 
                 statsRow.clear()
