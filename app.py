@@ -16,6 +16,7 @@ from views.admin.agent.deleteAgent import deleteAgent
 from views.admin.role.createRol import createRole
 from views.admin.role.viewRol import viewRole
 from views.admin.role.editarRol import editRole
+from views.admin.role.deleteRol import deleteRole
 
 # Tailwind CSS
 ui.add_head_html('''
@@ -153,5 +154,10 @@ def viewRolePage():
 def editRolePage():
     ui.add_head_html(verificarAcceso(['Administrador']))
     editRole()
+
+@ui.page('/eliminarRol')
+def deleteRolePage():
+    ui.add_head_html(verificarAcceso(['Administrador']))
+    deleteRole()
 
 ui.run(title="Ixavia Airline", favicon='./assets/logoIxavia.png')
