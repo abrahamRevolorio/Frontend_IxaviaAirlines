@@ -67,9 +67,14 @@ def editRole():
             guardar_btn.props('disable')
             response = await putToBackend('role/update', data)
 
-            if response and response.get('success'):
-                ui.notify('Rol actualizado correctamente', type='positive')
-                ui.run_javascript("setTimeout(() => window.location.href = '/', 2000)")
+            print(response)
+
+            if response:
+                if response.get('data').get('success') == False:
+                    ui.notify('El rol no existe', type='negative')
+                else:
+                    ui.notify('Rol actualizado correctamente', type='positive')
+                    ui.run_javascript("setTimeout(() => window.location.href = '/', 2000)")
             else:
                 msg = response.get('message', 'Error al actualizar') if response else 'Error en la conexión'
                 errors = response.get('errors') if response else None
