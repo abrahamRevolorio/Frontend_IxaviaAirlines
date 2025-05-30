@@ -17,6 +17,10 @@ from views.admin.role.createRol import createRole
 from views.admin.role.viewRol import viewRole
 from views.admin.role.editarRol import editRole
 from views.admin.role.deleteRol import deleteRole
+from views.general.viewFlightPeten import viewFlightPeten
+from views.general.viewFlightGuatemala import viewFlightGuatemala
+from views.general.viewFlights import viewFlights
+from views.admin.flight.createFlight import createFlight
 
 # Tailwind CSS
 ui.add_head_html('''
@@ -159,5 +163,23 @@ def editRolePage():
 def deleteRolePage():
     ui.add_head_html(verificarAcceso(['Administrador']))
     deleteRole()
+
+@ui.page('/verVuelos/peten')
+def viewFlightPetenPage():
+    viewFlightPeten()
+
+@ui.page('/verVuelos/guatemala')
+def viewFlightGuatemalaPage():
+    viewFlightGuatemala()
+
+@ui.page('/verVuelos')
+def viewFlightsPage():
+    ui.add_head_html(verificarAcceso(['Agente', 'Administrador', 'Cliente']))
+    viewFlights()
+
+@ui.page('/crearVuelo')
+def createFlightPage():
+    ui.add_head_html(verificarAcceso(['Administrador']))
+    createFlight()
 
 ui.run(title="Ixavia Airline", favicon='./assets/logoIxavia.png')

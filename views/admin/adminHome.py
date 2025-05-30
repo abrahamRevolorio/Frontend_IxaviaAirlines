@@ -44,8 +44,8 @@ def homePageAdmin():
             ])
         elif link == '/vuelos':
             mostrarCrudModal('Gestión de Vuelos', [
-                ('🛫 Crear Vuelo', 'green', '/crear_vuelo'),
-                ('📋 Ver Vuelos', 'blue', '/ver_vuelos'),
+                ('🛫 Crear Vuelo', 'green', '/crearVuelo'),
+                ('📋 Ver Vuelos', 'blue', '/verVuelos'),
                 ('🛠️ Actualizar Vuelo', 'yellow', '/actualizar_vuelo'),
                 ('🗑️ Eliminar Vuelo', 'red', '/eliminar_vuelo')
             ])

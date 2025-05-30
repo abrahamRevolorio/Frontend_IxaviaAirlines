@@ -18,8 +18,9 @@ def homePageClient():
     Navbar(opcionesNavbar)
 
     with ui.element('main').classes('flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-16'):
-        with ui.element('section').classes('flex flex-col md:flex-row items-center gap-10'):
-            with ui.column().classes('flex-1 text-center md:text-left'):
+
+        with ui.element('section').classes('flex flex-col md:flex-row-reverse items-center gap-10 mt-8 pt-8'):
+            with ui.column().classes('flex-1 text-center md:text-right'):
                 ui.label('Panel de Control - Cliente 👤').classes(
                     'text-4xl md:text-4xl font-extrabold text-[#486142] mb-6'
                 )
@@ -34,7 +35,23 @@ def homePageClient():
                 'flex-1 rounded-lg shadow-lg max-w-full w-full md:max-w-none'
             ).style('object-fit: cover; max-height: 340px;')
 
-        with ui.element('section').classes('flex flex-col md:flex-row-reverse items-center gap-10 mt-8'):
+        with ui.element('section').classes('flex flex-col md:flex-row items-center gap-10 pt-8'):
+            with ui.column().classes('flex-1 text-center md:text-left'):
+                ui.label('Tus Boletos Digitales').classes(
+                    'text-3xl md:text-4xl font-extrabold text-[#486142] mb-6'
+                )
+                ui.label(
+                    'Visualiza los vuelos disponibles'
+                ).classes('!text-base !md:text-lg !text-gray-700 !mb-8 !md:mb-10')
+                ui.button('Ver Vuelos').classes(
+                    '!w-full !sm:w-auto !min-w-[240px] !bg-[#486142] !text-white !font-semibold !px-8 !py-4 !rounded-lg !shadow-md !hover:bg-[#153B8B] !transition-colors'
+                ).on('click', lambda e: ui.run_javascript('window.location.href = "/verVuelos"'))
+
+            ui.image('https://us.123rf.com/450wm/vectorpointstudio/vectorpointstudio2111/vectorpointstudio211100024/176780786-interior-de-la-sala-del-aeropuerto-con-pasajeros-esperando-el-vuelo-movi%C3%A9ndose-en-coche-el%C3%A9ctrico.jpg?ver=6').classes(
+                'flex-1 rounded-lg shadow-lg max-w-full w-full md:max-w-none h-[10%]'
+            ).style('object-fit: cover; max-height: 340px;')
+
+        with ui.element('section').classes('flex flex-col md:flex-row-reverse items-center gap-10 mt-8 pt-8'):
             with ui.column().classes('flex-1 text-center md:text-right'):
                 ui.label('Tus Boletos Digitales').classes(
                     'text-3xl md:text-4xl font-extrabold text-[#486142] mb-6'
@@ -47,7 +64,7 @@ def homePageClient():
                 ).on('click', lambda e: ui.run_javascript('window.location.href = "/boletos"'))
             
             ui.image('https://www.laprensagrafica.com/__export/1722536858506/sites/prensagrafica/img/2024/08/01/boletos-de-avixn-1280x720.jpg_423682103.jpg').classes(
-                'flex-1 rounded-lg shadow-lg max-w-full w-full md:max-w-none'
+                'flex-1 rounded-lg shadow-lg max-w-full w-full h-[10%] md:max-w-none'
             ).style('object-fit: cover; max-height: 340px;')
 
         with ui.element('section').classes(

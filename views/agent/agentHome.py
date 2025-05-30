@@ -28,14 +28,7 @@ def homePageAgent():
         modal.open()
 
     def handleCardClick(link):
-        if link == '/vuelos':
-            mostrarCrudModal('Gestión de Vuelos', [
-                ('🛫 Crear Vuelo', 'green', '/crear_vuelo'),
-                ('📋 Ver Vuelos', 'blue', '/ver_vuelos'),
-                ('🛠️ Actualizar Vuelo', 'yellow', '/actualizar_vuelo'),
-                ('🗑️ Eliminar Vuelo', 'red', '/eliminar_vuelo')
-            ])
-        elif link == '/reportes':
+        if link == '/reportes':
             mostrarCrudModal('Reportes y Auditoría', [
                 ('📄 Ver Reportes', 'blue', '/ver_reportes'),
                 ('📥 Descargar Logs', 'yellow', '/descargar_logs'),
@@ -81,12 +74,6 @@ def homePageAgent():
                     'descripcion': 'Registra y edita la información de los clientes.',
                     'img': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzZJkMOr4OMV2ZXb_ZaIntWCfu-PI1HImuzA&s',
                     'link': '/clientes'
-                },
-                {
-                    'titulo': 'Gestión de Vuelos',
-                    'descripcion': 'Crea, edita y elimina vuelos disponibles.',
-                    'img': 'https://cdn-icons-png.flaticon.com/512/720/720298.png',
-                    'link': '/vuelos'
                 },
                 {
                     'titulo': 'Reportes y Auditoría',

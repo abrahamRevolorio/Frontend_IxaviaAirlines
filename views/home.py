@@ -29,10 +29,10 @@ def homePage():
                 with ui.row().classes('flex-col sm:flex-row justify-center md:justify-start gap-4 sm:gap-6'):
                     ui.button('Buscar vuelos CDG → Petén').classes(
                         '!w-full !sm:w-auto !min-w-[220px] !bg-[#1A5AC8] !text-white !font-semibold !px-6 !py-3 !rounded-lg !shadow-md !hover:bg-[#0F4AA6] !transition-colors'
-                    )
+                    ).on_click(lambda e: ui.run_javascript('window.location.href = "/verVuelos/peten"'))
                     ui.button('Buscar vuelos Petén → CDG').classes(
                         '!w-full !sm:w-auto !min-w-[220px] !bg-[#486142] !text-white !font-semibold !px-6 !py-3 !rounded-lg !shadow-md !hover:bg-[#2e4e2f] !transition-colors'
-                    )
+                    ).on_click(lambda e: ui.run_javascript('window.location.href = "/verVuelos/guatemala"'))
             ui.image('./assets/tikal.jpg').classes('flex-1 rounded-lg shadow-lg max-w-full w-full md:max-w-none').style('object-fit: cover; height: 320px;')
 
         with ui.element('section').classes('bg-[#f0f4ef] rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 text-center'):
