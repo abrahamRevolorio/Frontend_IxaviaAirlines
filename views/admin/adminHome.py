@@ -46,15 +46,8 @@ def homePageAdmin():
             mostrarCrudModal('Gestión de Vuelos', [
                 ('🛫 Crear Vuelo', 'green', '/crearVuelo'),
                 ('📋 Ver Vuelos', 'blue', '/verVuelos'),
-                ('🛠️ Actualizar Vuelo', 'yellow', '/actualizar_vuelo'),
+                ('🛠️ Actualizar Vuelo', 'yellow', '/editarVuelo'),
                 ('🗑️ Eliminar Vuelo', 'red', '/eliminarVuelo')
-            ])
-        elif link == '/aviones':
-            mostrarCrudModal('Capacidad de Aviones', [
-                ('✈️ Crear Avión', 'green', '/crear_avion'),
-                ('📋 Ver Aviones', 'blue', '/ver_aviones'),
-                ('🛠️ Actualizar Avión', 'yellow', '/actualizar_avion'),
-                ('🗑️ Eliminar Avión', 'red', '/eliminar_avion')
             ])
         elif link == '/reportes':
             mostrarCrudModal('Reportes y Auditoría', [
@@ -121,12 +114,6 @@ def homePageAdmin():
                     'descripcion': 'Crea, edita y elimina vuelos disponibles.',
                     'img': 'https://cdn-icons-png.flaticon.com/512/720/720298.png',
                     'link': '/vuelos'
-                },
-                {
-                    'titulo': 'Capacidad de Aviones',
-                    'descripcion': 'Modifica la capacidad máxima de asientos.',
-                    'img': 'https://cdn-icons-png.flaticon.com/512/10426/10426140.png',
-                    'link': '/aviones'
                 },
                 {
                     'titulo': 'Reportes y Auditoría',

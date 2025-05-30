@@ -22,6 +22,7 @@ from views.general.viewFlightGuatemala import viewFlightGuatemala
 from views.general.viewFlights import viewFlights
 from views.admin.flight.createFlight import createFlight
 from views.admin.flight.deleteFlight import deleteFlight
+from views.admin.flight.editFlight import editFlight
 
 # Tailwind CSS
 ui.add_head_html('''
@@ -187,5 +188,10 @@ def createFlightPage():
 def deleteFlightPage():
     ui.add_head_html(verificarAcceso(['Administrador']))
     deleteFlight()
+
+@ui.page('/editarVuelo')
+def editFlightPage():
+    ui.add_head_html(verificarAcceso(['Administrador']))
+    editFlight()
 
 ui.run(title="Ixavia Airline", favicon='./assets/logoIxavia.png')
