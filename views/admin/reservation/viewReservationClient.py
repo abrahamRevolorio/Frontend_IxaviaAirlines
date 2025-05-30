@@ -6,7 +6,7 @@ import asyncio
 
 async def fetchReservation():
     try:
-        response = await getFromBackend('view/client')
+        response = await getFromBackend('reservation/view/client')
         print(response)
         if response and response.get('success') and response['data'].get('success'):
             return response['data'].get('reservation_info', [])
