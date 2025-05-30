@@ -38,7 +38,7 @@ def homePageAdmin():
         elif link == '/roles':
             mostrarCrudModal('Roles', [
                 ('🆕 Crear Rol', 'green', '/crearRol'),
-                ('👥 Ver Roles', 'blue', '/verRol'),
+                ('👥 Ver Roles', 'blue', '/verRoles'),
                 ('✏️ Actualizar Rol', 'yellow', '/actualizarRol'),
                 ('🗑️ Eliminar Rol', 'red', '/eliminarRol')
             ])
