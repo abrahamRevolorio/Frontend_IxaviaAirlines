@@ -76,7 +76,7 @@ def createRole():
                 if response and response.get('success'):
                     registroExitoso = True
                 else:
-                    registroExitoso = f'fallo {response.get('message', 'Error desconocido')}'
+                    registroExitoso = f'fallo {response.get("message", "Error desconocido")}'
             except Exception as e:
                 registroExitoso = 'fallo:' + str(e)
 
