@@ -24,6 +24,7 @@ from views.admin.flight.createFlight import createFlight
 from views.admin.flight.deleteFlight import deleteFlight
 from views.admin.flight.editFlight import editFlight
 from views.admin.reservation.createReservationClient import createReservationClient
+from views.admin.reservation.viewReservationClient import viewReservation
 
 # Tailwind CSS
 ui.add_head_html('''
@@ -199,5 +200,10 @@ def editFlightPage():
 async def createReservationClientPage():
     ui.add_head_html(verificarAcceso(['Cliente']))
     await createReservationClient()
+
+@ui.page('/verReservas')
+async def viewReservationPage():
+    ui.add_head_html(verificarAcceso(['Cliente']))
+    await viewReservation()
 
 ui.run(title="Ixavia Airline", favicon='./assets/logoIxavia.png')

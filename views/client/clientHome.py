@@ -37,7 +37,7 @@ def homePageClient():
 
         with ui.element('section').classes('flex flex-col md:flex-row items-center gap-10 pt-8'):
             with ui.column().classes('flex-1 text-center md:text-left'):
-                ui.label('Tus Boletos Digitales').classes(
+                ui.label('Vuelos Disponibles').classes(
                     'text-3xl md:text-4xl font-extrabold text-[#486142] mb-6'
                 )
                 ui.label(
@@ -53,15 +53,15 @@ def homePageClient():
 
         with ui.element('section').classes('flex flex-col md:flex-row-reverse items-center gap-10 mt-8 pt-8'):
             with ui.column().classes('flex-1 text-center md:text-right'):
-                ui.label('Tus Boletos Digitales').classes(
+                ui.label('Tus Reservaciones').classes(
                     'text-3xl md:text-4xl font-extrabold text-[#486142] mb-6'
                 )
                 ui.label(
-                    '📲 Visualiza y descarga todos tus boletos adquiridos. ¡Llévalos siempre contigo en tu dispositivo móvil! 📥'
+                    '📲 Visualiza tus Reservaciones'
                 ).classes('!text-base !md:text-lg !text-gray-700 !mb-8 !md:mb-10')
                 ui.button('Ver Mis Boletos').classes(
                     '!w-full !sm:w-auto !min-w-[240px] !bg-[#486142] !text-white !font-semibold !px-8 !py-4 !rounded-lg !shadow-md !hover:bg-[#153B8B] !transition-colors'
-                ).on('click', lambda e: ui.run_javascript('window.location.href = "/boletos"'))
+                ).on('click', lambda e: ui.run_javascript('window.location.href = "/verReservas"'))
             
             ui.image('https://www.laprensagrafica.com/__export/1722536858506/sites/prensagrafica/img/2024/08/01/boletos-de-avixn-1280x720.jpg_423682103.jpg').classes(
                 'flex-1 rounded-lg shadow-lg max-w-full w-full h-[10%] md:max-w-none'
