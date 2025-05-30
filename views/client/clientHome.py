@@ -29,7 +29,7 @@ def homePageClient():
                 ).classes('text-base md:text-lg text-gray-700 mb-8 md:mb-10')
                 ui.button('Acceder a Gestión de Reservas').classes(
                     '!w-full !sm:w-auto !min-w-[240px] !bg-[#486142] !text-white !font-semibold !px-8 !py-4 !rounded-lg !shadow-md !hover:bg-[#37522C] !transition-colors'
-                ).on('click', lambda e: ui.run_javascript('window.location.href = "/reservas"'))
+                ).on('click', lambda e: ui.run_javascript('window.location.href = "/crearReserva"'))
 
             ui.image('https://media.istockphoto.com/id/490523573/es/foto/tranquilo-lago-peten-en-guatemala.jpg?s=612x612&w=0&k=20&c=HS6dTsRmg3Gga07R8lFBEdcwX5YRzN2E1GWPvJw_WJA=').classes(
                 'flex-1 rounded-lg shadow-lg max-w-full w-full md:max-w-none'

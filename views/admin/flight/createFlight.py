@@ -85,7 +85,6 @@ def createFlight():
 
             try:
                 response = await postToBackend('flight/add', data)
-                print(response)
                 if response:
                     if response.get('data').get('success'):
                         ui.notify('Vuelo creado exitosamente', type='positive')
