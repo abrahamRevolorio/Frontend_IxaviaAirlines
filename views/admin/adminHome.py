@@ -37,10 +37,10 @@ def homePageAdmin():
             ])
         elif link == '/roles':
             mostrarCrudModal('Roles', [
-                ('🆕 Crear Rol', 'green', '/crear_rol'),
-                ('👥 Ver Roles', 'blue', '/ver_roles'),
-                ('✏️ Actualizar Rol', 'yellow', '/actualizar_rol'),
-                ('🗑️ Eliminar Rol', 'red', '/eliminar_rol')
+                ('🆕 Crear Rol', 'green', '/crearRol'),
+                ('👥 Ver Roles', 'blue', '/verRol'),
+                ('✏️ Actualizar Rol', 'yellow', '/actualizarRol'),
+                ('🗑️ Eliminar Rol', 'red', '/eliminarRol')
             ])
         elif link == '/vuelos':
             mostrarCrudModal('Gestión de Vuelos', [
